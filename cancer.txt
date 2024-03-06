@@ -1,0 +1,46 @@
+- Missing Values x 
+- Duplicate values x
+- Outliers OR Visualization
+
+Visualization Lab 2
+- Visualization in 2D OR Dimensionality reduction LAB -> se 2 dimensions (PCA)
+- Outliers will be visible due to visualization
+- NO OUTLIERS DUE TO ERROR HANDLING
+- Scatterplots -> 2 Variables continuous and continuous
+- Histogram -> different variations
+- Bar charts -> categorical and continuous
+
+Data preprocessing
+- Encoding which fetures are categorical, LAB NO. 3
+- Which attributes are categorial and not ordinal? -> Categorical -> encoding
+- Feature Scaling, all numerical data has to be homogeneous
+- FEATURE SCALING NOT ON COLUMNS THAT WERE ENCODED - slicing
+
+Classification
+Lab 4 / Session 4 / Evaluation METRICS
+- Random Forest
+- Decision Trees
+- SVMs, Linear Kernel -> Polynomial -> Quadratic
+- Naive Bayesian
+- Neural networks
+- Logistic regression
+- Changing hyperparameters is new algorithm
+
+- 80 training 20 testing OR k-fold cross validation OR regularisation, OVERFEED LAB / LECTURE
+
+Same steps new dataset
+- Pkianoume ta idia apotelesmata???
+- Pkioi doulefkoun pkioi oi, doulefkoun me alla hyper parameters?
+- WHY??
+- DATASET: Other type of cancer AND/OR same cancer
+- Because they have different features -> alogorithms work better with different features
+FEATURE SELECTION LAB, for example NAIVE BAYESIAN might only work with specific features, i.e. more important features
+- Association rules learning only categorical variables (OPTIONAL)
+
+- Conclusion
+
+
+
+
+ 
+
