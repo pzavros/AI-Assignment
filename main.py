@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.metrics import recall_score
+from sklearn.ensemble import RandomForestClassifier
 
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
@@ -56,7 +57,7 @@ print(cancerData_imputed[numeric_cols].head(10))
 print("Missing values per column after imputation:")
 print(cancerData_imputed.isna().sum())
 
-# Splitting the dataset into the Training set and Test set
+# Splitting the dataset into the Training set and Test set 
 X = cancerData_imputed[numeric_cols].values
 y = cancerData_imputed['diagnosis_encoded'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
@@ -65,29 +66,46 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 classifier = LogisticRegression(random_state=0)
 classifier.fit(X_train, y_train)
 
-# Predicting the results on Training and Test sets
-y_train_pred = classifier.predict(X_train)
-y_test_pred = classifier.predict(X_test)
+# Training the Random Forest model on the Training set
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
+rf_classifier.fit(X_train, y_train)
 
-# Computing the accuracies
-train_accuracy = accuracy_score(y_train, y_train_pred)
-test_accuracy = accuracy_score(y_test, y_test_pred)
+# Predicting the results on Training and Test sets for both models
+y_train_pred_lr = classifier.predict(X_train)
+y_test_pred_lr = classifier.predict(X_test)
+y_train_pred_rf = rf_classifier.predict(X_train)
+y_test_pred_rf = rf_classifier.predict(X_test)
 
-# Calculate recall for the training set
-train_recall = recall_score(y_train, y_train_pred)
+# Computing the accuracies and recalls
+train_accuracy_lr = accuracy_score(y_train, y_train_pred_lr)
+test_accuracy_lr = accuracy_score(y_test, y_test_pred_lr)
+train_recall_lr = recall_score(y_train, y_train_pred_lr)
+test_recall_lr = recall_score(y_test, y_test_pred_lr)
 
-print(f"Training Set Recall: {train_recall}")
+train_accuracy_rf = accuracy_score(y_train, y_train_pred_rf)
+test_accuracy_rf = accuracy_score(y_test, y_test_pred_rf)
+train_recall_rf = recall_score(y_train, y_train_pred_rf)
+test_recall_rf = recall_score(y_test, y_test_pred_rf)
 
-print(f"Training Set Accuracy: {train_accuracy}")
-print(f"Test Set Accuracy: {test_accuracy}")
+# Printing the results
+print("Logistic Regression:")
+print(f"Training Set Accuracy: {train_accuracy_lr}")
+print(f"Test Set Accuracy: {test_accuracy_lr}")
+print(f"Training Set Recall: {train_recall_lr}")
+print(f"Test Set Recall: {test_recall_lr}")
 
-# Making the Confusion Matrix for the Test set
-cm = confusion_matrix(y_test, y_test_pred)
-print("Confusion Matrix for the Test Set:")
-print(cm)
+print("Random Forest:")
+print(f"Training Set Accuracy: {train_accuracy_rf}")
+print(f"Test Set Accuracy: {test_accuracy_rf}")
+print(f"Training Set Recall: {train_recall_rf}")
+print(f"Test Set Recall: {test_recall_rf}")
 
-# Computing recall for the Test set
-test_recall = recall_score(y_test, y_test_pred)
-print(f"Test Set Recall: {test_recall}")
+# Confusion Matrix for Logistic Regression
+cm_lr = confusion_matrix(y_test, y_test_pred_lr)
+print("Confusion Matrix for Logistic Regression:")
+print(cm_lr)
 
-# Optionally, print predicted probabilities for the Test set
+# Confusion Matrix for Random Forest
+cm_rf = confusion_matrix(y_test, y_test_pred_rf)
+print("Confusion Matrix for Random Forest:")
+print(cm_rf)
