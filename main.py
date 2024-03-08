@@ -7,13 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.impute import SimpleImputer
 
-
-
-
-
-
-
-
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
 breastData = pd.read_csv("datasets/breast-cancer-dataset.csv")
@@ -34,10 +27,35 @@ dep_var = cancerData.iloc[:,:].values
 
 
 #preproccesing
-imputer = SimpleImputer(missing_values=np.nan, strategy='mean') #replace any missing values by the average of the data in the respective column. 
-imputer.fit(dep_var[:,:]) #fit method which computes the mean of the columns specified
-dep_var[:,:] = imputer.transform(dep_var[:,:]) #the new columns will replace the old columns
-print(dep_var)
+# Count missing values before imputation
+print("Missing values per column before imputation:")
+print(cancerData.isna().sum())
+
+# Plot histograms
+plt.figure(figsize=(30, 20))
+cancerData.hist(bins=15, layout=(8, 4), figsize=(30, 20))
+plt.tight_layout()
+plt.show()
+
+# Preprocessing
+# Handle missing values
+# Separate numeric and non-numeric columns
+numeric_cols = cancerData.select_dtypes(include=[np.number]).columns
+non_numeric_cols = cancerData.select_dtypes(exclude=[np.number]).columns
+
+# Apply imputation only to numeric columns
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+cancerData_numeric_imputed = pd.DataFrame(imputer.fit_transform(cancerData[numeric_cols]), columns=numeric_cols)
+
+# Reconstruct the DataFrame with both numeric and non-numeric columns
+cancerData_imputed = pd.concat([cancerData[non_numeric_cols], cancerData_numeric_imputed], axis=1)
+
+# Display the processed data
+print(cancerData_imputed.head())
+
+# Count missing values after imputation
+print("Missing values per column after imputation:")
+print(cancerData_imputed.isna().sum())
 
 
-
+#encoding
