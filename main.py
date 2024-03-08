@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
@@ -40,6 +40,16 @@ cancerData_imputed['diagnosis_encoded'] = label_encoder.fit_transform(cancerData
 print("Original and Encoded 'diagnosis' values:")
 print(cancerData_imputed[['diagnosis', 'diagnosis_encoded']].head(100))
 
+# Feature Scaling - Scale only the numeric columns
+scaler = StandardScaler()
+cancerData_imputed[numeric_cols] = scaler.fit_transform(cancerData_imputed[numeric_cols])
+
+# Display changes after scaling
+print("Data after feature scaling:")
+print(cancerData_imputed[numeric_cols].head(10))
+
 # Count missing values after imputation
 print("Missing values per column after imputation:")
 print(cancerData_imputed.isna().sum())
+
+# The DataFrame is now ready with imputed values, encoded categorical data, and scaled numeric data.
