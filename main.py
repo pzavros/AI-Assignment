@@ -91,6 +91,3 @@ test_recall = recall_score(y_test, y_test_pred)
 print(f"Test Set Recall: {test_recall}")
 
 # Optionally, print predicted probabilities for the Test set
-y_pred_proba = classifier.predict_proba(X_test)[:, 1]
-print("Predicted probabilities for the Test Set:")
-print(y_pred_proba)
