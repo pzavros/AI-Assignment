@@ -57,16 +57,33 @@ print(cancerData_imputed[numeric_cols].head(10))
 print("Missing values per column after imputation:")
 print(cancerData_imputed.isna().sum())
 
+
+
+#BALANCE THE DATASET !!!!!!!!!!!!!!!!!!!!
+
+#PIPELINE KFOLD CROSS VALIDATION
+#IF !PIPELINE, CREATE NEW CSV 
+#BALANCE ONLY THE TRAINING
+#PRECISION = TRUE POSITIVE/TRUE POSITIVIE + FALSE POSITIVE
+#HYPER PARAMETERS/ TUNING PARAMETERS
+
+#RANDOMIZE THE DATASET BEFORE SPLITTING !!!!!!!!!!!!!!!!!!
+
+
 # Splitting the dataset into the Training set and Test set 
 X = cancerData_imputed[numeric_cols].values
 y = cancerData_imputed['diagnosis_encoded'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # Training the Logistic Regression model on the Training set
+# RANDOM STATE = 42 ALWAYS CONSTANT
+# DOCUMENTATION
+# decision tree genie, kati allo
 classifier = LogisticRegression(random_state=0)
 classifier.fit(X_train, y_train)
 
 # Training the Random Forest model on the Training set
+#NUMBER OF TREES
 rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
 rf_classifier.fit(X_train, y_train)
 
@@ -89,16 +106,16 @@ test_recall_rf = recall_score(y_test, y_test_pred_rf)
 
 # Printing the results
 print("Logistic Regression:")
-print(f"Training Set Accuracy: {train_accuracy_lr}")
-print(f"Test Set Accuracy: {test_accuracy_lr}")
-print(f"Training Set Recall: {train_recall_lr}")
-print(f"Test Set Recall: {test_recall_lr}")
+print(f"Training Set Accuracy: {train_accuracy_lr*100}")
+print(f"Test Set Accuracy: {test_accuracy_lr*100}")
+print(f"Training Set Recall: {train_recall_lr*100}")
+print(f"Test Set Recall: {test_recall_lr*100}")
 
 print("Random Forest:")
-print(f"Training Set Accuracy: {train_accuracy_rf}")
-print(f"Test Set Accuracy: {test_accuracy_rf}")
-print(f"Training Set Recall: {train_recall_rf}")
-print(f"Test Set Recall: {test_recall_rf}")
+print(f"Training Set Accuracy: {train_accuracy_rf*100}")
+print(f"Test Set Accuracy: {test_accuracy_rf*100}")
+print(f"Training Set Recall: {train_recall_rf*100}")
+print(f"Test Set Recall: {test_recall_rf*100}")
 
 # Confusion Matrix for Logistic Regression
 cm_lr = confusion_matrix(y_test, y_test_pred_lr)
