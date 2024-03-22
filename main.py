@@ -9,6 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.metrics import recall_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
@@ -75,12 +76,25 @@ X = cancerData_imputed[numeric_cols].values
 y = cancerData_imputed['diagnosis_encoded'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
+# import SMOTE module from imblearn library
+# pip install imblearn (if you don't have imblearn in your system already)
+
+
 # Training the Logistic Regression model on the Training set
 # RANDOM STATE = 42 ALWAYS CONSTANT
 # DOCUMENTATION
 # decision tree genie, kati allo
-classifier = LogisticRegression(random_state=0)
+classifier = LogisticRegression(C=0.1,random_state=0)
+classifier2 = LogisticRegression(C=0.01,random_state=0)
 classifier.fit(X_train, y_train)
+# We tested this and we didn't like it "classifier = LogisticRegression(C=0.01, penalty='l2', solver='saga', random_state=0)"
+
+#Logistic Regression:
+#Training Set Accuracy: 98.9010989010989
+#Test Set Accuracy: 96.49122807017544
+#Training Set Recall: 97.57575757575758
+#Test Set Recall: 95.74468085106383
+
 
 # Training the Random Forest model on the Training set
 #NUMBER OF TREES
@@ -126,3 +140,27 @@ print(cm_lr)
 cm_rf = confusion_matrix(y_test, y_test_pred_rf)
 print("Confusion Matrix for Random Forest:")
 print(cm_rf)
+
+# Training the SVM model on the Training set
+
+#Linear Algorithm
+ln_classifier = SVC(kernel = 'linear', random_state = 0)
+ln_classifier.fit(X_train, y_train)
+
+#Apply the algorithm on train
+y_train_pred_ln = ln_classifier.predict(X_train)
+y_test_pred_ln = ln_classifier.predict(X_test)
+
+#Find the accuracy of linear
+train_accuracy_ln = accuracy_score(y_train, y_train_pred_ln)
+test_accuracy_ln = accuracy_score(y_test, y_test_pred_ln)
+
+#Find the recall of linear
+train_recall_ln = recall_score(y_train, y_train_pred_ln)
+test_recall_ln = recall_score(y_test, y_test_pred_ln)
+
+print("Linear Algorithm:")
+print(f"Training Set Accuracy: {train_accuracy_ln*100}")
+print(f"Test Set Accuracy: {test_accuracy_ln*100}")
+print(f"Training Set Recall: {train_recall_ln*100}")
+print(f"Test Set Recall: {test_recall_ln*100}")
