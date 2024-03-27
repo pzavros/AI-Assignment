@@ -10,6 +10,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.metrics import recall_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
+from imblearn.over_sampling import SMOTE
 
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
@@ -78,6 +79,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # import SMOTE module from imblearn library
 # pip install imblearn (if you don't have imblearn in your system already)
+# Balancing the Training Dataset with SMOTE
+
+smote = SMOTE(random_state=42)
+X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
 
 
 # Training the Logistic Regression model on the Training set
@@ -87,19 +92,55 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 classifier = LogisticRegression(C=0.1,random_state=0)
 classifier2 = LogisticRegression(C=0.01,random_state=0)
 classifier.fit(X_train, y_train)
+
+ #Training dataset for balancing
+classifier = LogisticRegression(C=0.1, random_state=0)
+classifier.fit(X_train_balanced, y_train_balanced)
 # We tested this and we didn't like it "classifier = LogisticRegression(C=0.01, penalty='l2', solver='saga', random_state=0)"
 
-#Logistic Regression:
-#Training Set Accuracy: 98.9010989010989
-#Test Set Accuracy: 96.49122807017544
-#Training Set Recall: 97.57575757575758
-#Test Set Recall: 95.74468085106383
 
+# Logistic Regression Metrics
+y_train_pred_lr = classifier.predict(X_train_balanced)
+y_test_pred_lr = classifier.predict(X_test)
+train_accuracy_lr = accuracy_score(y_train_balanced, y_train_pred_lr)
+test_accuracy_lr = accuracy_score(y_test, y_test_pred_lr)
+train_recall_lr = recall_score(y_train_balanced, y_train_pred_lr)
+test_recall_lr = recall_score(y_test, y_test_pred_lr)
+
+print("-------------------------------------------------------")
+
+print("Logistic Regression:")
+print(f"Balanced Training Set Accuracy: {train_accuracy_lr*100}")
+print(f"Test Set Accuracy: {test_accuracy_lr*100}")
+print(f"Balanced Training Set Recall: {train_recall_lr*100}")
+print(f"Test Set Recall: {test_recall_lr*100}")
+
+print("-------------------------------------------------------")
 
 # Training the Random Forest model on the Training set
 #NUMBER OF TREES
 rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
 rf_classifier.fit(X_train, y_train)
+
+
+# Training the Random Forest model on the Balanced Training set
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
+rf_classifier.fit(X_train_balanced, y_train_balanced)
+
+
+# Random Forest Metrics
+y_train_pred_rf = rf_classifier.predict(X_train_balanced)
+y_test_pred_rf = rf_classifier.predict(X_test)
+train_accuracy_rf = accuracy_score(y_train_balanced, y_train_pred_rf)
+test_accuracy_rf = accuracy_score(y_test, y_test_pred_rf)
+train_recall_rf = recall_score(y_train_balanced, y_train_pred_rf)
+test_recall_rf = recall_score(y_test, y_test_pred_rf)
+print("Random Forest:")
+print(f"Balanced Training Set Accuracy: {train_accuracy_rf*100}")
+print(f"Test Set Accuracy: {test_accuracy_rf*100}")
+print(f"Balanced Training Set Recall: {train_recall_rf*100}")
+print(f"Test Set Recall: {test_recall_rf*100}")
+
 
 # Predicting the results on Training and Test sets for both models
 y_train_pred_lr = classifier.predict(X_train)
@@ -118,18 +159,21 @@ test_accuracy_rf = accuracy_score(y_test, y_test_pred_rf)
 train_recall_rf = recall_score(y_train, y_train_pred_rf)
 test_recall_rf = recall_score(y_test, y_test_pred_rf)
 
+print("-------------------------------------------------------")
 # Printing the results
 print("Logistic Regression:")
 print(f"Training Set Accuracy: {train_accuracy_lr*100}")
 print(f"Test Set Accuracy: {test_accuracy_lr*100}")
 print(f"Training Set Recall: {train_recall_lr*100}")
 print(f"Test Set Recall: {test_recall_lr*100}")
-
+print("-------------------------------------------------------")
 print("Random Forest:")
 print(f"Training Set Accuracy: {train_accuracy_rf*100}")
 print(f"Test Set Accuracy: {test_accuracy_rf*100}")
 print(f"Training Set Recall: {train_recall_rf*100}")
 print(f"Test Set Recall: {test_recall_rf*100}")
+
+print("-------------------------------------------------------")
 
 # Confusion Matrix for Logistic Regression
 cm_lr = confusion_matrix(y_test, y_test_pred_lr)
@@ -158,6 +202,9 @@ test_accuracy_ln = accuracy_score(y_test, y_test_pred_ln)
 #Find the recall of linear
 train_recall_ln = recall_score(y_train, y_train_pred_ln)
 test_recall_ln = recall_score(y_test, y_test_pred_ln)
+
+print("-------------------------------------------------------")
+
 
 print("Linear Algorithm:")
 print(f"Training Set Accuracy: {train_accuracy_ln*100}")
