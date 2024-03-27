@@ -4,13 +4,12 @@ import seaborn as sns
 import numpy as np
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix, accuracy_score
-from sklearn.metrics import recall_score
+from sklearn.metrics import accuracy_score, recall_score, confusion_matrix
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split, GridSearchCV
 
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
@@ -85,16 +84,58 @@ smote = SMOTE(random_state=42)
 X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
 
 
+
+# Hyperparameter Tuning with GridSearchCV
+# Logistic Regression
+lr = LogisticRegression(random_state=0)
+param_grid_lr = {
+    'C': [0.001, 0.01, 0.1, 1, 10, 100],
+    'solver': ['newton-cg', 'lbfgs', 'liblinear']
+}
+grid_search_lr = GridSearchCV(estimator=lr, param_grid=param_grid_lr, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search_lr.fit(X_train_balanced, y_train_balanced)
+
+# Random Forest
+rf = RandomForestClassifier(random_state=0)
+param_grid_rf = {
+    'n_estimators': [10, 50, 100, 200],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10]
+}
+grid_search_rf = GridSearchCV(estimator=rf, param_grid=param_grid_rf, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search_rf.fit(X_train_balanced, y_train_balanced)
+
+# Support Vector Machine
+svc = SVC(random_state=0)
+param_grid_svc = {
+    'C': [0.1, 1, 10],
+    'kernel': ['linear', 'rbf', 'poly'],
+    'gamma': ['scale', 'auto']
+}
+grid_search_svc = GridSearchCV(estimator=svc, param_grid=param_grid_svc, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search_svc.fit(X_train_balanced, y_train_balanced)
+
+# Print best parameters and scores
+print("Best parameters for Logistic Regression:", grid_search_lr.best_params_)
+print("Best score for Logistic Regression:", grid_search_lr.best_score_)
+print("Best parameters for Random Forest:", grid_search_rf.best_params_)
+print("Best score for Random Forest:", grid_search_rf.best_score_)
+print("Best parameters for SVC:", grid_search_svc.best_params_)
+print("Best score for SVC:", grid_search_svc.best_score_)
+
+
 # Training the Logistic Regression model on the Training set
 # RANDOM STATE = 42 ALWAYS CONSTANT
 # DOCUMENTATION
 # decision tree genie, kati allo
-classifier = LogisticRegression(C=0.1,random_state=0)
-classifier2 = LogisticRegression(C=0.01,random_state=0)
+
+classifier = LogisticRegression(**grid_search_lr.best_params_, random_state=0)
+
+#classifier2 = LogisticRegression(C=0.01,random_state=0)
 classifier.fit(X_train, y_train)
 
  #Training dataset for balancing
-classifier = LogisticRegression(C=0.1, random_state=0)
+classifier = LogisticRegression(**grid_search_lr.best_params_, random_state=0)
 classifier.fit(X_train_balanced, y_train_balanced)
 # We tested this and we didn't like it "classifier = LogisticRegression(C=0.01, penalty='l2', solver='saga', random_state=0)"
 
@@ -119,12 +160,12 @@ print("-------------------------------------------------------")
 
 # Training the Random Forest model on the Training set
 #NUMBER OF TREES
-rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
+rf_classifier = RandomForestClassifier(**grid_search_rf.best_params_, random_state=0)
 rf_classifier.fit(X_train, y_train)
 
 
 # Training the Random Forest model on the Balanced Training set
-rf_classifier = RandomForestClassifier(n_estimators=100, random_state=0)
+rf_classifier = RandomForestClassifier(**grid_search_rf.best_params_, random_state=0)
 rf_classifier.fit(X_train_balanced, y_train_balanced)
 
 
@@ -186,10 +227,14 @@ print("Confusion Matrix for Random Forest:")
 print(cm_rf)
 
 # Training the SVM model on the Training set
-
 #Linear Algorithm
 ln_classifier = SVC(kernel = 'linear', random_state = 0)
 ln_classifier.fit(X_train, y_train)
+
+#Linear Algorithm
+ln_classifier = SVC(**grid_search_svc.best_params_, random_state=0)
+ln_classifier.fit(X_train_balanced, y_train_balanced)
+
 
 #Apply the algorithm on train
 y_train_pred_ln = ln_classifier.predict(X_train)
@@ -211,3 +256,5 @@ print(f"Training Set Accuracy: {train_accuracy_ln*100}")
 print(f"Test Set Accuracy: {test_accuracy_ln*100}")
 print(f"Training Set Recall: {train_recall_ln*100}")
 print(f"Test Set Recall: {test_recall_ln*100}")
+
+
