@@ -78,6 +78,8 @@ print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.reshape(len(y_test)
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("Recall Score:", recall_score(y_test, y_pred))
+print("Precisino Score:", precision_score(y_test, y_pred))
 
 
 #--------------------------#
@@ -106,12 +108,14 @@ param_grid_rf = {
 grid_search_rf = GridSearchCV(estimator=rf, param_grid=param_grid_rf, cv=5, scoring='accuracy', n_jobs=-1)
 grid_search_rf.fit(X_train_balanced, y_train_balanced)
 
-# Support Vector Machine
+# Support Vector Machine 
+# Na diksoume kai manually to linear kai poly me diaforetika parameters kai diaforetiko degree gia poly 
 svc = SVC(random_state=0)
 param_grid_svc = {
     'C': [0.1, 1, 10],
     'kernel': ['linear', 'rbf', 'poly'],
-    'gamma': ['scale', 'auto']
+    'gamma': ['scale', 'auto'],
+    'degree': [2,3,4,9]
 }
 grid_search_svc = GridSearchCV(estimator=svc, param_grid=param_grid_svc, cv=5, scoring='accuracy', n_jobs=-1)
 grid_search_svc.fit(X_train_balanced, y_train_balanced)
