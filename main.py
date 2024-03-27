@@ -88,34 +88,35 @@ print("Best parameters for SVC:", grid_search_svc.best_params_)
 print("Best score for SVC:", grid_search_svc.best_score_)
 
 # Function to print metrics and confusion matrix
-def print_metrics_and_cm(classifier, X_test, y_test, classifier_name, dataset_type):
+def print_metrics_and_confusion_matrix(classifier, X_test, y_test, classifier_name):
     y_pred = classifier.predict(X_test)
-    print(f"\n{classifier_name} on {dataset_type} Dataset:")
+    print(f"\n{classifier_name}")
     print(f"Accuracy: {accuracy_score(y_test, y_pred)*100:.2f}%")
     print(f"Recall: {recall_score(y_test, y_pred)*100:.2f}%")
     print("Confusion Matrix:")
     
-# Confusion matrix, representation
+# Confusion matrix, example representation
 #     [[True Negatives (TN)  False Positives (FP)]
 #     [False Negatives (FN) True Positives (TP)]]
     print(confusion_matrix(y_test, y_pred))
 
-# Instantiate and train models with the best parameters
+# Use best parameters for training
 lr_classifier = LogisticRegression(**grid_search_lr.best_params_, random_state=0)
 rf_classifier = RandomForestClassifier(**grid_search_rf.best_params_, random_state=0)
 svc_classifier = SVC(**grid_search_svc.best_params_, random_state=0)
 
-# Train on unbalanced data
+# ------------------------ TRAIN ON UNBALANCED DATA ---------------------------
 lr_classifier.fit(X_train, y_train)
 rf_classifier.fit(X_train, y_train)
 svc_classifier.fit(X_train, y_train)
 
-# Evaluate on unbalanced data
-print_metrics_and_cm(lr_classifier, X_test, y_test, "Logistic Regression", "Unbalanced")
-print_metrics_and_cm(rf_classifier, X_test, y_test, "Random Forest", "Unbalanced")
-print_metrics_and_cm(svc_classifier, X_test, y_test, "SVC", "Unbalanced")
+# Evaluation
+print("\n ----- Unbalanced Data ----- ")
+print_metrics_and_confusion_matrix(lr_classifier, X_test, y_test, "Logistic Regression")
+print_metrics_and_confusion_matrix(rf_classifier, X_test, y_test, "Random Forest")
+print_metrics_and_confusion_matrix(svc_classifier, X_test, y_test, "SVC")
 
-# Train on balanced data
+# ------------------------ TRAIN ON BALANCED DATA ---------------------------
 lr_classifier_balanced = LogisticRegression(**grid_search_lr.best_params_, random_state=0)
 rf_classifier_balanced = RandomForestClassifier(**grid_search_rf.best_params_, random_state=0)
 svc_classifier_balanced = SVC(**grid_search_svc.best_params_, random_state=0)
@@ -124,8 +125,9 @@ lr_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 rf_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 svc_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 
-# Evaluate on balanced data
-print_metrics_and_cm(lr_classifier_balanced, X_test, y_test, "Logistic Regression", "Balanced")
-print_metrics_and_cm(rf_classifier_balanced, X_test, y_test, "Random Forest", "Balanced")
-print_metrics_and_cm(svc_classifier_balanced, X_test, y_test, "SVC", "Balanced")
+# Evaluation
+print("\n ----- Balanced Data ----- ")
+print_metrics_and_confusion_matrix(lr_classifier_balanced, X_test, y_test, "Logistic Regression")
+print_metrics_and_confusion_matrix(rf_classifier_balanced, X_test, y_test, "Random Forest")
+print_metrics_and_confusion_matrix(svc_classifier_balanced, X_test, y_test, "SVC")
 
