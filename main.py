@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.naive_bayes import GaussianNB
 import tensorflow as tf
 from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.neighbors import KNeighborsClassifier
 # Load Data
 cancerData = pd.read_csv("datasets/Cancer_Data.csv")
 
@@ -190,6 +190,15 @@ param_grid_deecision_tree = {
 }
 grid_search_decision_tree = GridSearchCV(estimator=decisiontree, param_grid=param_grid_deecision_tree, cv=5, scoring='accuracy', n_jobs=-1)
 grid_search_decision_tree.fit(X_train_balanced, y_train_balanced)
+
+knn = KNeighborsClassifier()
+param_grid_knn= {
+    'metric': ['minkowski', 'correlation', 'cityblock', 'canberra'],
+    'n_neighbors': [1, 5, 10, 15],
+    'p': [5, 7, 10, 13],
+}
+grid_search_knn = GridSearchCV(estimator=knn, param_grid=param_grid_knn, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search_knn.fit(X_train_balanced, y_train_balanced)
 # Print best parameters and scores
 print("\nBest parameters for Logistic Regression:", grid_search_lr.best_params_)
 print("Best score for Logistic Regression:", grid_search_lr.best_score_)
@@ -199,6 +208,8 @@ print("Best parameters for SVC:", grid_search_svc.best_params_)
 print("Best score for SVC:", grid_search_svc.best_score_)
 print("Best parameter for decision tree",grid_search_decision_tree.best_params_)
 print("Best score for decision tree",grid_search_decision_tree.best_score_ )
+print("Best parameter for KNN",grid_search_knn.best_params_)
+print("Best score for KNN",grid_search_knn.best_score_ )
 
 # Function to print metrics and confusion matrix
 def print_metrics_and_confusion_matrix(classifier, X_test, y_test, classifier_name):
@@ -221,6 +232,7 @@ random_forest_classifier = RandomForestClassifier(**grid_search_rf.best_params_,
 svc_linear_classifier = SVC(**grid_search_svc.best_params_, random_state=0)
 naive_classifier = GaussianNB()
 decision_tree_classifier = DecisionTreeClassifier(**grid_search_decision_tree.best_params_, random_state=0)
+knn_classifier = KNeighborsClassifier(**grid_search_knn.best_params_)
 
 
 
@@ -230,6 +242,7 @@ random_forest_classifier .fit(X_train, y_train)
 svc_linear_classifier.fit(X_train, y_train)
 naive_classifier.fit(X_train, y_train)
 decision_tree_classifier.fit(X_train, y_train)
+knn_classifier.fit(X_train, y_train)
 
 # Evaluation
 print("\n ----- Unbalanced Data ----- ")
@@ -238,6 +251,7 @@ print_metrics_and_confusion_matrix(random_forest_classifier , X_test, y_test, "R
 print_metrics_and_confusion_matrix(svc_linear_classifier, X_test, y_test, "SVC:")
 print_metrics_and_confusion_matrix(naive_classifier, X_test, y_test, "Naive Baysain:")
 print_metrics_and_confusion_matrix(decision_tree_classifier, X_test, y_test, "Decision Tree:")
+print_metrics_and_confusion_matrix(knn_classifier, X_test, y_test, "KNN:")
 
 
 # ------------------------ TRAIN ON BALANCED DATA ---------------------------
@@ -246,6 +260,7 @@ rf_classifier_balanced = RandomForestClassifier(**grid_search_rf.best_params_, r
 svc_classifier_balanced = SVC(**grid_search_svc.best_params_, random_state=0)
 naive_classifier_balanced = GaussianNB()
 decision_tree_classifier_balanced = DecisionTreeClassifier(**grid_search_decision_tree.best_params_, random_state=0)
+knn_classifier_balanced = KNeighborsClassifier(**grid_search_knn.best_params_)
 
 
 
@@ -254,6 +269,7 @@ rf_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 svc_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 naive_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 decision_tree_classifier_balanced.fit(X_train_balanced, y_train_balanced)
+knn_classifier_balanced.fit(X_train_balanced, y_train_balanced)
 
 
 
@@ -264,4 +280,4 @@ print_metrics_and_confusion_matrix(rf_classifier_balanced, X_test, y_test, "Rand
 print_metrics_and_confusion_matrix(svc_classifier_balanced, X_test, y_test, "SVC:")
 print_metrics_and_confusion_matrix(naive_classifier_balanced, X_test, y_test, "Naive Baysain:")
 print_metrics_and_confusion_matrix(decision_tree_classifier_balanced, X_test, y_test, "Decision Tree:")
-
+print_metrics_and_confusion_matrix(knn_classifier_balanced, X_test, y_test, "KNN:")
