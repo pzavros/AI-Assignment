@@ -39,8 +39,7 @@ FEATURE SELECTION LAB, for example NAIVE BAYESIAN might only work with specific 
 
 - Conclusion
 
-
-
+Accurac
 
 
  

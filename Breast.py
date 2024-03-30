@@ -15,44 +15,48 @@ import tensorflow as tf
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
 # Load Data
-cancerData = pd.read_csv("datasets/Cancer_Data.csv")
+breast_cancer_data = pd.read_csv("datasets/breast-cancer-dataset.csv")
 
 # Histogram of the data
+numeric_columns = breast_cancer_data.select_dtypes(include=[np.number]).columns
 plt.figure(figsize=(30, 20))
-cancerData.hist(bins=15, layout=(8, 4), figsize=(30, 20))
+breast_cancer_data[numeric_columns].hist(bins=15, layout=(3, 3), figsize=(30, 20))
 plt.tight_layout()
 plt.show()
 
 # Preprocessing
 print("\nMissing values per column before imputation:")
-print(cancerData.isna().sum())
+print(breast_cancer_data.isna().sum())
 
-# Identifying numeric and non-numeric columns
-numeric_cols = cancerData.select_dtypes(include=[np.number]).columns
-non_numeric_cols = cancerData.select_dtypes(exclude=[np.number]).columns
+# Separate numeric and non-numeric columns
+numeric_cols = breast_cancer_data.select_dtypes(include=[np.number]).columns.tolist()
+non_numeric_cols = breast_cancer_data.select_dtypes(exclude=[np.number]).columns.tolist()
 
 # Impute numeric columns
 imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
-cancerData[numeric_cols] = imputer.fit_transform(cancerData[numeric_cols])
+breast_cancer_data[numeric_cols] = imputer.fit_transform(breast_cancer_data[numeric_cols])
 
 # Encode categorical columns
 label_encoder = LabelEncoder()
-cancerData['diagnosis_encoded'] = label_encoder.fit_transform(cancerData['diagnosis'])
+for col in non_numeric_cols:
+    breast_cancer_data[col] = label_encoder.fit_transform(breast_cancer_data[col])
 
-# Split the dataset into Training set and Test set
-X = cancerData[numeric_cols]
-y = cancerData['diagnosis_encoded']
+# Split the dataset
+X = breast_cancer_data.drop(['Diagnosis Result'], axis=1)
+y = breast_cancer_data['Diagnosis Result']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
 # Scale features
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_train[numeric_cols] = scaler.fit_transform(X_train[numeric_cols])
+X_test[numeric_cols] = scaler.transform(X_test[numeric_cols])
 
-# Balancing the Training Dataset with SMOTE
+# Balance with SMOTE
 smote = SMOTE(random_state=42)
 X_train_balanced, y_train_balanced = smote.fit_resample(X_train, y_train)
 
+# Ensure the columns are named
+X_train_balanced = pd.DataFrame(X_train_balanced, columns=X_train.columns)
 
 #-------MLP ALGORITHM-------#
 
@@ -81,7 +85,7 @@ y_pred = ann.predict(X_test)
 y_pred = (y_pred > 0.5)
 
 # Output the predictions alongside the actual values
-print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.to_numpy().reshape(len(y_test), 1)), 1))
+print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.values.reshape(len(y_test), 1)), axis=1))
 
 # Construct the Confusion Matrix and calculate the accuracy
 cm = confusion_matrix(y_test, y_pred)
@@ -125,7 +129,7 @@ y_pred_balanced = ann_balanced .predict(X_test)
 y_pred_balanced = (y_pred_balanced > 0.5)
 
 # Output the predictions alongside the actual values
-print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.to_numpy().reshape(len(y_test), 1)), 1))
+print(np.concatenate((y_pred.reshape(len(y_pred), 1), y_test.values.reshape(len(y_test), 1)), 1))
 
 # Construct the Confusion Matrix and calculate the accuracy
 cm_balanced = confusion_matrix(y_test, y_pred_balanced)
@@ -282,3 +286,4 @@ print_metrics_and_confusion_matrix(svc_classifier_balanced, X_test, y_test, "SVC
 print_metrics_and_confusion_matrix(naive_classifier_balanced, X_test, y_test, "Naive Baysain:")
 print_metrics_and_confusion_matrix(decision_tree_classifier_balanced, X_test, y_test, "Decision Tree:")
 print_metrics_and_confusion_matrix(knn_classifier_balanced, X_test, y_test, "KNN:")
+

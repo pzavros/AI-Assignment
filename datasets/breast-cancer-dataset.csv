@@ -29,7 +29,6 @@
 28,2019,31,1,5,0,Left,0,Lower inner,1,Malignant
 29,2019,36,1,5,0,Right,0,Lower inner,1,Benign
 30,2019,42,1,3,0,Left,0,Lower outer,1,Malignant
-31,2019,56,0,9,1,Left,1,#,0,Malignant
 32,2019,48,0,7,1,Right,1,Upper outer,0,Malignant
 33,2019,40,1,2,0,Left,1,Upper outer,0,Malignant
 34,2019,35,1,1,0,Left,0,Lower inner,0,Benign
@@ -39,14 +38,13 @@
 38,2019,50,0,5,0,Left,0,Lower outer,0,Benign
 39,2019,20,1,3,0,Left,0,Upper outer,0,Benign
 40,2019,45,1,5,1,Left,1,Upper inner,0,Malignant
-41,#,34,1,#,#,#,#,#,#,Malignant
 42,2019,38,1,2,0,Left,0,Lower inner,0,Benign
 43,2019,37,1,8,1,Right,1,Upper outer,1,Malignant
 44,2019,47,0,7,1,Left,1,Upper outer,1,Malignant
 45,2019,57,0,1,0,Left,0,Lower inner,0,Benign
 46,2019,42,1,4,0,Left,0,Upper outer,0,Benign
 47,2019,27,1,4,0,Left,0,Lower outer,0,Benign
-48,2019,25,1,5,0,#,0,Upper outer,0,Malignant
+48,2019,25,1,5,0,Right,0,Upper outer,0,Malignant
 49,2019,17,1,1,0,Right,0,Lower inner,0,Benign
 50,2019,23,1,1,0,Left,0,Lower outer,0,Benign
 51,2019,43,0,1,0,Right,0,Upper inner,0,Benign
@@ -66,7 +64,6 @@
 65,2019,41,1,5,0,Left,0,Lower inner,0,Malignant
 66,2019,42,1,8,0,Left,0,Lower outer,0,Malignant
 67,2019,53,0,2,0,Left,0,Upper outer,1,Malignant
-68,2019,40,1,1,0,Left,0,Lower outer,#,Benign
 69,2019,28,1,3,0,Right,0,Upper outer,1,Benign
 70,2019,68,0,7,1,Right,1,Lower outer,0,Malignant
 71,2019,42,1,3,0,Left,0,Upper inner,0,Benign
@@ -142,7 +139,6 @@
 141,2020,63,0,6,1,Right,1,Upper inner,1,Malignant
 142,2020,26,1,5,0,Right,0,Upper outer,0,Benign
 143,2020,14,0,1,0,Right,0,Upper inner,0,Benign
-144,2020,29,1,2,0,#,0,Lower inner,1,Benign
 145,2020,22,1,1,0,Right,0,Lower outer,0,Benign
 146,2020,37,1,2,0,Left,0,Lower outer,1,Benign
 147,2020,41,1,8,1,Left,1,Upper outer,1,Malignant
@@ -163,10 +159,8 @@
 162,2020,31,1,1,0,Left,0,Lower inner,0,Benign
 163,2020,33,1,4,0,Right,0,Upper inner,0,Benign
 164,2020,38,1,5,1,Right,1,Upper outer,1,Malignant
-165,2020,38,1,2,0,#,0,Upper outer,1,Benign
 166,2020,57,0,4,1,Left,1,Upper outer,1,Malignant
-167,2020,62,0,3,1,#,1,Upper inner,1,Malignant
-168,2020,55,0,2,0,Right,0,Lower outer,0,Benign
+167,2020,62,0,3,1,Right,1,Upper inner,1,Malignant
 169,2020,47,1,10,1,Right,1,Upper outer,0,Malignant
 170,2020,20,1,2,0,Left,0,Lower outer,1,Benign
 171,2020,39,1,3,0,Right,0,Lower inner,1,Benign
@@ -177,7 +171,6 @@
 176,2020,14,1,3,0,Left,0,Upper inner,0,Benign
 177,2020,23,1,5,0,Left,0,Upper outer,1,Benign
 178,2020,62,1,2,0,Right,0,Upper inner,1,Benign
-179,2020,49,1,4,0,#,0,Lower outer,0,Benign
 180,2020,29,1,1,0,Right,0,Lower outer,0,Benign
 181,2020,24,1,1,0,Left,1,Lower inner,0,Benign
 182,2020,67,0,6,1,Left,1,Upper outer,1,Malignant
